@@ -243,13 +243,14 @@
     updateTimelineLabel(null);
   }
 
-  function setTimeline(value) {
+  async function setTimeline(value) {
     const numeric = Number(value);
     if (!Number.isFinite(numeric) || numeric >= timelineBounds.max - 60 * 1000) {
       Overview.setTimeCursor(null);
       updateTimelineLabel(null);
       return;
     }
+    if (Overview.getWindow?.() !== '7d') await Overview.setWindow('7d');
     Overview.setTimeCursor(numeric);
     updateTimelineLabel(numeric);
   }
@@ -279,7 +280,7 @@
         return;
       }
       timeline.value = String(value);
-      setTimeline(value);
+      void setTimeline(value);
     }, 240);
     setTimeline(value);
   }
@@ -344,7 +345,7 @@
     baselineToggle.lastElementChild.textContent = open ? '-' : '+';
     if (open) void renderBaseline();
   });
-  timeline?.addEventListener('input', event => setTimeline(event.target.value));
+  timeline?.addEventListener('input', event => { void setTimeline(event.target.value); });
   document.getElementById('briefing-close')?.addEventListener('click', () => { briefing.hidden = true; });
   document.getElementById('briefing-export')?.addEventListener('click', exportBrief);
   document.addEventListener('keydown', event => {

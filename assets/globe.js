@@ -144,7 +144,7 @@ const Overview = (() => {
     if (searchTerm && !haystack.includes(searchTerm)) return false;
     const timestamp = pointTimestamp(point);
     if (timestamp != null) {
-      if (timeCursor != null && timestamp > timeCursor) return false;
+      if (focusWindow === '7d' && timeCursor != null && timestamp > timeCursor) return false;
       const age = Date.now() - timestamp;
       const windowMs = focusWindow === '7d' ? 7 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
       if (age < -5 * 60 * 1000 || age > windowMs) return false;
@@ -613,7 +613,7 @@ const Overview = (() => {
     focusRegion = Object.prototype.hasOwnProperty.call(regionBounds, options.region) ? options.region : 'global';
     searchTerm = String(options.search || '').trim().toLowerCase();
     focusWindow = options.window === '7d' ? '7d' : '24h';
-    timeCursor = Number.isFinite(Number(options.at)) ? Number(options.at) : null;
+    timeCursor = options.window === '7d' && Number.isFinite(Number(options.at)) ? Number(options.at) : null;
     anomalyMode = Boolean(options.anomaly);
     const regionInput = document.getElementById('region-filter');
     const searchInput = document.getElementById('command-search');

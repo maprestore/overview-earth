@@ -141,6 +141,9 @@
     hideWelcome();
     window.OverviewCurrentStory = story;
     setMapMode(story, Overview.getMode());
+    if (Overview.getTimeCursor?.() != null) Overview.setTimeCursor(null);
+    if (Overview.getAnomalyMode?.()) Overview.setAnomalyMode(false);
+    if (Overview.getWindow?.() !== '24h') await Overview.setWindow('24h');
     await Overview.applyView(preset.layers, { story });
   }
 

@@ -78,7 +78,7 @@ const OverviewHistory = (() => {
     }
   }
 
-  async function read(layerId, since) {
+  async function read(layerId, since = Date.now() - RETENTION_MS) {
     try {
       const db = await open();
       return await new Promise((resolve, reject) => {
@@ -180,11 +180,66 @@ const OverviewHistory = (() => {
     return result;
   }
 
+  async function exportData(layerIds, since = Date.now() - RETENTION_MS) {
+    const ids = Array.isArray(layerIds) && layerIds.length ? layerIds : null;
+    const snapshots = ids ? await allSnapshots(ids) : await allSnapshots(['earthquakes', 'satellites', 'flights', 'ships', 'news', 'cables', 'buildings']);
+    return {
+      schema: 'overview.history.v1',
+      exportedAt: new Date().toISOString(),
+      since: new Date(since).toISOString(),
+      snapshots: snapshots.filter(snapshot => snapshot.capturedAt >= since)
+    };
+  }
+
+  async function importData(payload) {
+    const snapshots = Array.isArray(payload?.snapshots) ? payload.snapshots : [];
+    let pointCount = 0;
+    let snapshotCount = 0;
+    await transaction('readwrite', store => {
+      for (const snapshot of snapshots) {
+        if (!snapshot?.layerId || !Number.isFinite(Number(snapshot.capturedAt)) || !Array.isArray(snapshot.points)) continue;
+        const context = {
+          layerId: snapshot.layerId,
+          source: snapshot.points[0]?.provenance?.source || 'imported history',
+          sourceUrl: snapshot.points[0]?.provenance?.sourceUrl || '',
+          fetchedAt: snapshot.capturedAt
+        };
+        const normalized = typeof OverviewSignalSchema !== 'undefined'
+          ? OverviewSignalSchema.normalizePoints(snapshot.points, context).points
+          : snapshot.points;
+        if (!normalized.length) continue;
+        const capturedAt = Number(snapshot.capturedAt);
+        store.put({
+          key: snapshot.key || `${snapshot.layerId}:${capturedAt}:${Math.random().toString(36).slice(2)}`,
+          layerId: snapshot.layerId,
+          capturedAt,
+          points: normalized.slice(0, MAX_POINTS_PER_SNAPSHOT)
+        });
+        pointCount += normalized.length;
+        snapshotCount += 1;
+      }
+    });
+    void prune();
+    return { snapshots: snapshotCount, points: pointCount };
+  }
+
+  async function clear() {
+    try {
+      await transaction('readwrite', store => store.clear());
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
   return {
     record,
     pointsFor,
     bounds,
     statsFor,
+    exportData,
+    importData,
+    clear,
     available: () => Boolean(window.indexedDB || remoteUrl),
     remote: Boolean(remoteUrl),
     retentionDays: 7

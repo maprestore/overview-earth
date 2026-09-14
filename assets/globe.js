@@ -203,13 +203,22 @@ const Overview = (() => {
   function inspectSignal(point, layerId) {
     const layer = layers.get(layerId);
     if (!layer) return;
+    const registry = typeof OverviewLayerRegistry !== 'undefined' ? OverviewLayerRegistry.get(layerId) : null;
     window.dispatchEvent(new CustomEvent('overview:signal-selected', {
       detail: {
         ...point,
         layerId,
         layerLabel: layer.config.label,
         source: layer.source,
-        sourceUrl: layer.config.sourceUrl || ''
+        sourceUrl: layer.config.sourceUrl || registry?.sourceUrl || '',
+        provenance: point.provenance || {
+          source: layer.source || registry?.source || '',
+          sourceUrl: layer.config.sourceUrl || registry?.sourceUrl || '',
+          fetchedAt: layer.lastUpdated ? new Date(layer.lastUpdated).toISOString() : '',
+          attribution: registry?.license || layer.source || '',
+          license: registry?.license || 'Source terms apply',
+          confidence: 'source-reported'
+        }
       }
     }));
   }
@@ -467,16 +476,25 @@ const Overview = (() => {
       if (layer.requestId !== requestId || dataMode !== requestMode) return;
       const points = Array.isArray(result) ? result : result?.points;
       if (!Array.isArray(points)) throw new Error('layer returned a non-array result');
+      const sourceName = requestMode === 'replay'
+        ? 'bundled replay fixture'
+        : Array.isArray(result) ? layer.config.source || '' : result.source || layer.config.source || '';
+      const normalized = typeof OverviewSignalSchema !== 'undefined'
+        ? OverviewSignalSchema.normalizePoints(points, {
+          layerId: id,
+          source: sourceName,
+          sourceUrl: layer.config.sourceUrl || '',
+          fetchedAt: Date.now()
+        }).points
+        : points;
       const capturedAt = Date.now();
-      layer.currentPoints = points.filter(point => (
+      layer.currentPoints = normalized.filter(point => (
         Number.isFinite(point?.lat) && Number.isFinite(point?.lon)
       )).map(point => point.observedAt || pointTimestamp(point) != null
         ? point
         : { ...point, observedAt: capturedAt });
       layer.points = layer.currentPoints;
-      layer.source = requestMode === 'replay'
-        ? 'bundled replay fixture'
-        : Array.isArray(result) ? layer.config.source || '' : result.source || layer.config.source || '';
+      layer.source = sourceName;
       layer.status = requestMode === 'replay'
         ? 'replay'
         : result.status || (Array.isArray(result) || !result.fallback ? 'online' : 'fallback');
@@ -583,6 +601,9 @@ const Overview = (() => {
       layer.requestId += 1;
     }
     if (options.refresh !== false) {
+      if (dataMode === 'replay' && typeof OverviewReplay !== 'undefined' && OverviewReplay.loadPack) {
+        await OverviewReplay.loadPack();
+      }
       await Promise.all([...layers]
         .filter(([, layer]) => layer.enabled)
         .map(([id]) => refreshLayer(id)));

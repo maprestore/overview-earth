@@ -17,5 +17,5 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Run syntax, structure, and security checks
-        run: node scripts/check.mjs
+       - name: Run syntax, structure, replay, and security checks
+         run: node scripts/check.mjs && node scripts/validate-replay.mjs

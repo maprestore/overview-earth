@@ -264,8 +264,10 @@ body {
 }
 
 .command-search input { min-width: 188px; }
+.history-format { appearance: none; background: var(--panel); border: 1px solid var(--line-bright); color: var(--text-faint); font: inherit; font-size: 8px; min-height: 28px; padding: 0 7px; }
 .command-control select:focus,
-.command-search input:focus { border-color: var(--accent); outline: 1px solid rgba(63, 182, 255, 0.2); }
+.command-search input:focus,
+.history-format:focus { border-color: var(--accent); outline: 1px solid rgba(63, 182, 255, 0.2); }
 .command-search input::placeholder { color: var(--text-faint); }
 
 .command-segmented {

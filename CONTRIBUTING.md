@@ -8,7 +8,7 @@ Overview is intentionally small and source-aware. Contributions should make the 
 2. Read the adapter and provider documentation for the source you are changing.
 3. Check that the source permits the proposed browser or redistribution use.
 
-For a quick pre-commit syntax check, run `node scripts/check.mjs`. The same check runs in GitHub Actions from `.github/workflows/quality.yml`.
+Install nothing for the core checks. Run `npm test`; the same checks run in GitHub Actions from `.github/workflows/quality.yml`.
 
 ## Adding A Layer
 
@@ -19,6 +19,8 @@ For a quick pre-commit syntax check, run `node scripts/check.mjs`. The same chec
 5. A fetcher may return `{ points, source, fallback }` to keep fallback provenance visible.
 6. Document refresh limits, credentials, CORS behavior, and licensing.
 7. Keep the layer disabled by default if it needs a key or relay.
+8. Add the layer to `assets/layer-registry.js` so its provenance and terms are visible to contributors.
+9. Add or update a `replay-packs/*.json` fixture when live data is not deterministic.
 
 ## Pull Request Checklist
 
@@ -28,5 +30,7 @@ For a quick pre-commit syntax check, run `node scripts/check.mjs`. The same chec
 - No API keys, private data, or fabricated observations are committed.
 - Desktop and mobile layouts remain usable.
 - The README explains any new user-facing behavior.
+- `node scripts/validate-replay.mjs` passes for every replay pack.
+- The adapter returns points accepted by `OverviewSignalSchema`.
 
 Small, focused pull requests are easier to review and safer to deploy.

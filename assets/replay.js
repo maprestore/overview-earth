@@ -7,6 +7,7 @@
 
 const OverviewReplay = (() => {
   const now = Date.now();
+  let activePack = null;
 
   const earthquakeSeeds = [
     [14.5, -92.1, 5.2, 'off the coast of Chiapas', 1],
@@ -146,8 +147,24 @@ const OverviewReplay = (() => {
   }
 
   function pointsFor(id) {
-    return clone({ earthquakes, satellites, flights, ships, news, cables, buildings }[id] || []);
+    const packed = activePack?.layers?.[id]?.points;
+    return clone(Array.isArray(packed) ? packed : { earthquakes, satellites, flights, ships, news, cables, buildings }[id] || []);
   }
 
-  return { pointsFor, articles };
+  async function loadPack(url = 'replay-packs/pacific-rim-demo.json') {
+    if (activePack) return activePack;
+    try {
+      const response = await fetch(url, { cache: 'no-store' });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const pack = await response.json();
+      if (pack.schema !== 'overview.replay.v1' || !pack.layers) throw new Error('invalid replay pack');
+      activePack = pack;
+      return activePack;
+    } catch (error) {
+      console.info(`Overview replay pack unavailable: ${error.message || error}`);
+      return null;
+    }
+  }
+
+  return { pointsFor, articles, loadPack, getPack: () => activePack };
 })();

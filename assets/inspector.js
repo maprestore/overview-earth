@@ -14,6 +14,9 @@
   const position = document.getElementById('inspector-position');
   const time = document.getElementById('inspector-time');
   const source = document.getElementById('inspector-source');
+  const fetched = document.getElementById('inspector-fetched');
+  const confidence = document.getElementById('inspector-confidence');
+  const license = document.getElementById('inspector-license');
   const sourceLink = document.getElementById('inspector-source-link');
   const watch = document.getElementById('inspector-watch');
   const brief = document.getElementById('inspector-brief');
@@ -70,6 +73,10 @@
     position.textContent = `${Number(signal.lat).toFixed(3)}, ${Number(signal.lon).toFixed(3)}`;
     time.textContent = formatTime(signal);
     source.textContent = signal.source || 'Source status attached to layer';
+    const provenance = signal.provenance || {};
+    fetched.textContent = provenance.fetchedAt ? formatTime({ observedAt: provenance.fetchedAt }) : 'SOURCE FRESHNESS';
+    confidence.textContent = provenance.confidence || 'SOURCE-REPORTED';
+    license.textContent = provenance.license || 'SOURCE TERMS APPLY';
     const link = signal.url || signal.sourceUrl || '';
     const validLink = /^https?:\/\//i.test(link);
     sourceLink.hidden = !validLink;

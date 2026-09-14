@@ -1,0 +1,12 @@
+{
+  "name": "overview-earth",
+  "private": true,
+  "version": "2.0.0",
+  "description": "A source-aware open planetary signals console.",
+  "type": "module",
+  "scripts": {
+    "check": "node scripts/check.mjs",
+    "validate:replay": "node scripts/validate-replay.mjs",
+    "test": "npm run check && npm run validate:replay"
+  }
+}

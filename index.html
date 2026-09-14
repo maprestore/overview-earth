@@ -78,9 +78,13 @@
        </div>
        <span class="window-note" id="history-status">LIVE WINDOW</span>
    </div>
-  <button class="command-export" id="refresh-data" type="button" title="Refresh enabled data sources">SYNC ACTIVE ↻</button>
-  <button class="command-export" id="export-snapshot" type="button">EXPORT SNAPSHOT <span>↓</span></button>
-</nav>
+   <button class="command-export" id="refresh-data" type="button" title="Refresh enabled data sources">SYNC ACTIVE ↻</button>
+   <button class="command-export" id="export-snapshot" type="button">EXPORT SNAPSHOT <span>↓</span></button>
+   <button class="command-export" id="export-history" type="button">EXPORT HISTORY <span>↓</span></button>
+   <button class="command-export" id="import-history" type="button">IMPORT HISTORY <span>↑</span></button>
+   <select class="history-format" id="history-format" aria-label="History export format"><option value="json">JSON</option><option value="geojson">GEOJSON</option><option value="csv">CSV</option></select>
+   <input id="history-file" type="file" accept="application/json,.json" hidden>
+ </nav>
 
 <div class="body-shell">
   <aside class="layer-panel" id="layer-panel" aria-label="Map layers">
@@ -244,8 +248,11 @@
         <div class="inspector-grid">
           <span>TYPE</span><strong id="inspector-layer"></strong>
           <span>POSITION</span><strong id="inspector-position"></strong>
-          <span>OBSERVED</span><strong id="inspector-time"></strong>
-          <span>SOURCE</span><strong id="inspector-source"></strong>
+           <span>OBSERVED</span><strong id="inspector-time"></strong>
+           <span>SOURCE</span><strong id="inspector-source"></strong>
+           <span>FETCHED</span><strong id="inspector-fetched"></strong>
+           <span>CONFIDENCE</span><strong id="inspector-confidence"></strong>
+           <span>LICENSE</span><strong id="inspector-license"></strong>
         </div>
         <div class="inspector-actions">
           <button class="inspector-watch" id="inspector-watch" type="button">WATCH SIGNAL</button>
@@ -322,6 +329,8 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js" integrity="sha384-qOkzR5Ke/XkQxuGVJ9hpFEpDlcoLtWwVYhnJf06cLIZa2vaIptSqaubivErzmD5O" crossorigin="anonymous"></script>
 <script src="assets/config.js"></script>
 <script src="assets/source-utils.js"></script>
+<script src="assets/signal-schema.js"></script>
+<script src="assets/layer-registry.js"></script>
 <script src="assets/replay.js"></script>
 <script src="assets/history.js"></script>
 <script src="assets/globe.js"></script>

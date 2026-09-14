@@ -26,6 +26,8 @@ Data is everywhere. The hard part is making it legible.
 
 Overview turns documented public feeds into a calm, high-signal situation room. Enable only the streams you need, see where signals cluster, and inspect the source behind every point. It is intentionally small enough to understand, fork, and extend in an afternoon.
 
+Open-source architecture, replay packs, provenance, and contributor workflows are documented in [docs/open-source-release.md](docs/open-source-release.md) and [docs/layer-authoring.md](docs/layer-authoring.md).
+
 > The map is a live visual index, not a data warehouse. Each point is either a current observation or a clearly labeled source-derived location.
 
 ## What You Get
@@ -50,6 +52,9 @@ Overview turns documented public feeds into a calm, high-signal situation room. 
 | Mission capsules | Copy a URL that preserves the active mission query, filters, anomaly mode, and time cursor for handoff or review. |
 | Local alert rules | Arm simple threshold rules in the browser and see matches on the latest loaded points. These rules are local and do not send server-side notifications. |
 | Baseline compare | Expand a source-by-source comparison against the seven-day browser-collected average when history exists. Missing history is labeled instead of guessed. |
+| Open signal contract | `OverviewSignalSchema` normalizes coordinates, timestamps, provenance, licensing, and confidence for every adapter. |
+| Portable replay packs | Deterministic JSON scenes can be validated, shared, and loaded by replay mode without provider credentials. |
+| History interchange | Export and import local history as canonical JSON, GeoJSON, or CSV. |
 | Responsive console | The same situation-room language works on desktop and mobile without a build pipeline. |
 
 ## The First Thirty Seconds
@@ -65,6 +70,7 @@ Overview is designed to make the first interaction obvious:
 7. **Share the view.** Copy the current URL and send someone the exact same layer selection, filters, or replay state.
 8. **Use the command deck.** Focus a region, find a loaded signal by label, or export the current observations for further analysis.
 9. **Open Mission Console.** Try “strong earthquakes near Japan,” scrub the Time Machine, or open an evidence brief from a fused signal.
+10. **Share the data.** Export history as JSON, GeoJSON, or CSV, or use a replay pack to reproduce a known scene without live feeds.
 
 ## Built For
 

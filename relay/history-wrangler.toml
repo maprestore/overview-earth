@@ -1,0 +1,14 @@
+name = "overview-history"
+main = "history-worker.js"
+compatibility_date = "2025-09-01"
+
+[vars]
+ALLOWED_ORIGINS = "https://maprestore.github.io"
+
+[triggers]
+crons = ["17 * * * *"]
+
+[[d1_databases]]
+binding = "HISTORY_DB"
+database_name = "overview-history"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"

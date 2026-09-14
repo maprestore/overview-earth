@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0A0E14">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data: https://threejs.org; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; script-src 'self' https://cdn.jsdelivr.net https://unpkg.com https://api.gdeltproject.org; connect-src 'self' https://cdn.jsdelivr.net https://unpkg.com https://earthquake.usgs.gov https://celestrak.org https://celestrak.com https://opensky-network.org https://api.adsb.lol https://api.gdeltproject.org https://data.aishub.net https://www.submarinecablemap.com https://data.apps.fao.org https://overpass-api.de https://overpass.kumi.systems https://api.openstreetmap.org https://threejs.org">
+<title>Overview — Live Layers of Planet Earth</title>
+<meta name="description" content="Overview is a live planetary intelligence console for earthquakes, satellites, flights, news, ships, and submarine cables from documented public sources.">
+<meta property="og:title" content="Overview — Live Layers of Planet Earth">
+<meta property="og:description" content="A source-aware planetary intelligence console with guided views, computed briefings, and live public feeds.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://maprestore.github.io/overview-earth/docs/overview-social-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<div class="app-shell">
+
+<header class="hud-top">
+  <div class="brand-lockup">
+    <div class="brand-emblem" aria-hidden="true">
+      <span class="emblem-ring emblem-ring-outer"></span>
+      <span class="emblem-ring emblem-ring-inner"></span>
+      <span class="emblem-core"></span>
+    </div>
+    <div class="brand-copy">
+      <div class="brand-meta"><span class="mark">●</span> GLOBAL OBSERVATORY <span class="meta-divider">//</span> LIVE TELEMETRY</div>
+      <div class="title">OVERVIEW</div>
+      <div class="subtitle">REAL-TIME LAYERS OF PLANET EARTH</div>
+    </div>
+  </div>
+  <div class="hud-right">
+    <div class="network-state">
+       <span class="live-pulse" id="network-pulse" aria-hidden="true"></span>
+       <span class="hud-label">NETWORK STATUS</span>
+       <strong id="network-status-text">OPERATIONAL</strong>
+    </div>
+    <div class="clock-block">
+      <span class="hud-label">UTC / ZULU</span>
+      <strong id="clock">--:--:--Z</strong>
+    </div>
+  </div>
+</header>
+
+<nav class="command-deck" aria-label="Situation controls">
+  <div class="command-identity">
+    <span class="command-label">MONITOR</span>
+    <span class="command-readout" id="command-readout">GLOBAL / 0 OBSERVATIONS</span>
+  </div>
+  <label class="command-control">
+    <span class="command-label">REGION</span>
+    <select id="region-filter" aria-label="Filter map by region">
+      <option value="global">Global</option>
+      <option value="americas">Americas</option>
+      <option value="mena">MENA</option>
+      <option value="europe">Europe</option>
+      <option value="asia">Asia</option>
+      <option value="japan">Japan</option>
+      <option value="latin-america">Latin America</option>
+      <option value="africa">Africa</option>
+      <option value="oceania">Oceania</option>
+    </select>
+  </label>
+  <label class="command-search">
+    <span class="command-label">FIND A SIGNAL</span>
+    <input id="command-search" type="search" placeholder="label, city, source" autocomplete="off">
+  </label>
+  <div class="command-control command-window">
+    <span class="command-label">WINDOW</span>
+       <div class="command-segmented" role="group" aria-label="Source time window">
+        <button class="is-active" type="button" data-window="24h" aria-pressed="true">24H</button>
+        <button type="button" data-window="7d" aria-pressed="false">7D</button>
+       </div>
+       <span class="window-note" id="history-status">LIVE WINDOW</span>
+   </div>
+  <button class="command-export" id="refresh-data" type="button" title="Refresh enabled data sources">SYNC ACTIVE ↻</button>
+  <button class="command-export" id="export-snapshot" type="button">EXPORT SNAPSHOT <span>↓</span></button>
+</nav>
+
+<div class="body-shell">
+  <aside class="layer-panel" id="layer-panel" aria-label="Map layers">
+    <div class="panel-topline">
+      <div class="panel-heading">DATA LAYERS</div>
+       <span class="panel-index">07 SOURCES</span>
+    </div>
+    <div class="panel-intro">
+      <p>One view. Multiple signals.</p>
+      <span>Toggle streams to shape the picture.</span>
+    </div>
+    <section class="story-panel" aria-label="Story modes">
+      <div class="story-heading">
+        <span>FIELD GUIDES</span>
+        <small>ONE-CLICK VIEWS</small>
+      </div>
+      <div class="story-grid">
+        <button class="story-button" type="button" data-story="baseline">
+          <strong>LIVE BASELINE</strong>
+          <span>Earth + orbital + air</span>
+        </button>
+        <button class="story-button" type="button" data-story="impact">
+          <strong>IMPACT MAP</strong>
+          <span>Quakes + news signals</span>
+        </button>
+         <button class="story-button" type="button" data-story="infrastructure">
+           <strong>INFRASTRUCTURE</strong>
+           <span>Orbit + cable routes</span>
+         </button>
+         <button class="story-button" type="button" data-story="built">
+           <strong>BUILT WORLD</strong>
+           <span>Buildings + aircraft glyphs</span>
+         </button>
+      </div>
+      <button class="share-button" id="share-view" type="button">SHARE CURRENT VIEW <span>↗</span></button>
+      <button class="share-button replay-link" id="toggle-replay" type="button">OPEN REPLAY FIXTURE <span>REC</span></button>
+    </section>
+    <div class="layer-list" id="layer-list">
+      <!-- Layer toggles are injected here by globe.js based on registered layers -->
+    </div>
+    <div class="panel-foot">
+       <div class="feed-key"><span class="feed-key-line"></span> LIVE + OPEN MAP FEEDS</div>
+       <p>STATUS AND SOURCE STAY ATTACHED</p>
+    </div>
+  </aside>
+
+  <main id="map-wrap">
+    <div class="map-topbar">
+       <div>
+         <span class="map-overline">PLANETARY SITUATION MAP</span>
+         <span class="map-context">GLOBAL / NATURAL EARTH PROJECTION</span>
+       </div>
+       <div class="map-actions">
+          <div class="map-zoom-controls" role="group" aria-label="Map zoom controls">
+           <button type="button" id="map-zoom-out" aria-label="Zoom map out" title="Zoom out">-</button>
+           <button type="button" id="map-zoom-reset" aria-label="Reset map zoom" title="Reset zoom">1:1</button>
+           <button type="button" id="map-zoom-in" aria-label="Zoom map in" title="Zoom in">+</button>
+          </div>
+          <button class="mission-control" id="mission-toggle" type="button" aria-expanded="false">MISSION CONSOLE</button>
+          <button class="tour-control" id="run-tour" type="button">RUN 30S TOUR</button>
+        <div class="map-mode"><span class="mode-dot"></span> <span id="map-mode-label">MODE / LIVE</span></div>
+      </div>
+    </div>
+    <div class="map-viewport">
+      <div class="map-grid" aria-hidden="true"></div>
+      <svg id="map" viewBox="0 0 960 500" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Live map of planetary data"></svg>
+       <div id="status" class="status-overlay" aria-live="polite">INITIALIZING…</div>
+       <div class="map-corner map-corner-tl" aria-hidden="true"></div>
+       <div class="map-corner map-corner-br" aria-hidden="true"></div>
+       <div class="map-hint">CLICK OR FOCUS A POINT FOR SOURCE DETAILS / WHEEL TO ZOOM</div>
+       <aside class="mission-drawer" id="mission-drawer" hidden aria-label="Mission console">
+         <div class="mission-head">
+           <div>
+             <span class="mission-kicker">PLANETARY INTELLIGENCE</span>
+             <strong>MISSION CONSOLE</strong>
+           </div>
+           <button class="mission-close" id="mission-close" type="button">CLOSE</button>
+         </div>
+         <form class="mission-query" id="planet-query">
+           <label for="planet-query-input">ASK THE PLANET</label>
+           <div class="mission-query-row">
+             <input id="planet-query-input" type="search" placeholder="e.g. strong quakes near Japan" autocomplete="off">
+             <button type="submit">RUN</button>
+           </div>
+         </form>
+         <div class="mission-examples" aria-label="Example questions">
+           <button type="button" data-query="strong earthquakes near Japan">JAPAN / SEISMIC</button>
+           <button type="button" data-query="show infrastructure in Europe">EUROPE / INFRA</button>
+           <button type="button" data-query="what is anomalous today">ANOMALY SCAN</button>
+         </div>
+         <div class="mission-tools">
+           <button id="anomaly-toggle" type="button" aria-pressed="false">ANOMALY FOCUS</button>
+           <button id="timeline-play" type="button">PLAY HISTORY</button>
+         </div>
+         <button class="mission-share" id="mission-share" type="button">COPY MISSION CAPSULE LINK</button>
+         <label class="timeline-control" for="timeline-range">
+           <span><b>TIME MACHINE</b><small id="timeline-label">LIVE NOW</small></span>
+           <input id="timeline-range" type="range" min="0" max="100" value="100" step="60000" disabled>
+         </label>
+         <section class="fusion-section" aria-labelledby="fusion-title">
+           <div class="fusion-heading"><span id="fusion-title">SIGNAL FUSION</span><small id="fusion-status">WAITING FOR SOURCES</small></div>
+           <div id="fusion-list" class="fusion-list" aria-live="polite"></div>
+         </section>
+         <section class="alert-section" aria-labelledby="alert-title">
+           <div class="fusion-heading"><span id="alert-title">LOCAL ALERT RULES</span><small id="alert-status">BROWSER ONLY</small></div>
+           <form class="alert-form" id="alert-rule-form">
+             <select id="alert-layer" aria-label="Alert source"><option value="earthquakes">EARTHQUAKES</option><option value="satellites">SATELLITES</option></select>
+             <input id="alert-threshold" type="number" min="0" step="0.1" value="5" aria-label="Alert threshold">
+             <button type="submit">ARM</button>
+           </form>
+           <div class="alert-list" id="alert-list" aria-live="polite"></div>
+         </section>
+         <section class="baseline-section" aria-labelledby="baseline-title">
+           <button class="baseline-toggle" id="baseline-toggle" type="button" aria-expanded="false"><span id="baseline-title">COMPARE TO 7D BASELINE</span><span>+</span></button>
+           <div class="baseline-list" id="baseline-list" hidden aria-live="polite"></div>
+         </section>
+       </aside>
+     </div>
+     <div class="map-bottomline">
+       <span><i class="legend-dot"></i> DATA POINTS</span>
+       <span>PROJECTION / NATURAL EARTH 1</span>
+       <span class="map-attribution">USGS / CELESTRAK / OSM / OPEN DATA</span>
+    </div>
+  </main>
+
+  <aside class="intel-panel" aria-label="Orbital context and news brief">
+    <section class="orbital-card">
+      <div class="intel-topline">
+        <div class="panel-heading">ORBITAL CONTEXT</div>
+        <span class="panel-index">3D / VISUALIZATION</span>
+      </div>
+      <div class="orbital-stage">
+        <canvas id="orbital-globe" aria-label="Illustrative three-dimensional Earth with satellite orbit"></canvas>
+        <div class="orbital-scanline" aria-hidden="true"></div>
+        <span class="orbit-tag orbit-tag-top">SATELLITE PASS</span>
+        <span class="orbit-tag orbit-tag-bottom">VISUAL CONTEXT / NOT A MEASURED POSITION</span>
+      </div>
+      <div class="orbital-caption">
+        <strong>EARTH / ORBITAL VIEW</strong>
+        <span>Built to explain the signal surface at a glance.</span>
+      </div>
+    </section>
+
+    <section class="news-panel" id="news-panel">
+      <div class="intel-topline">
+        <div class="panel-heading">SIGNAL BRIEF</div>
+        <span class="panel-index">GDELT / 24H</span>
+      </div>
+      <div class="news-status" id="news-status">ENABLE NEWS TO LOAD CURRENT COVERAGE</div>
+      <div class="news-list" id="news-list" aria-live="polite"></div>
+     <a class="news-source" href="https://api.gdeltproject.org/api/v2/doc/doc" target="_blank" rel="noreferrer">OPEN RAW GDELT FEED <span>↗</span></a>
+    </section>
+    <section class="signal-inspector" id="signal-inspector" aria-labelledby="signal-inspector-title">
+      <div class="intel-topline">
+        <div class="panel-heading" id="signal-inspector-title">SIGNAL INSPECTOR</div>
+        <button class="inspector-close" id="signal-inspector-close" type="button" aria-label="Clear selected signal">CLEAR</button>
+      </div>
+      <div class="inspector-empty" id="signal-inspector-empty">SELECT OR FOCUS A MAP SIGNAL</div>
+      <div class="inspector-content" id="signal-inspector-content" hidden>
+        <strong class="inspector-title" id="inspector-label"></strong>
+        <div class="inspector-grid">
+          <span>TYPE</span><strong id="inspector-layer"></strong>
+          <span>POSITION</span><strong id="inspector-position"></strong>
+          <span>OBSERVED</span><strong id="inspector-time"></strong>
+          <span>SOURCE</span><strong id="inspector-source"></strong>
+        </div>
+        <div class="inspector-actions">
+          <button class="inspector-watch" id="inspector-watch" type="button">WATCH SIGNAL</button>
+          <button class="inspector-brief" id="inspector-brief" type="button">BRIEF SIGNAL</button>
+          <a id="inspector-source-link" href="#" target="_blank" rel="noreferrer" hidden>OPEN SOURCE ↗</a>
+        </div>
+        <div class="inspector-status" id="inspector-status" aria-live="polite"></div>
+      </div>
+    </section>
+  </aside>
+</div>
+
+<footer class="hud-bottom">
+  <section class="brief-strip" aria-labelledby="brief-title">
+    <div class="brief-head">
+      <div class="brief-title" id="brief-title">TODAY'S BRIEF</div>
+      <span id="brief-sync">DERIVED FROM LOADED SOURCES</span>
+    </div>
+    <div class="brief-grid" id="brief-grid">
+      <article class="brief-card">
+        <span class="brief-label">SEISMIC PEAK</span>
+        <strong id="brief-quake-value">WAITING</strong>
+        <span id="brief-quake-note">LARGEST OBSERVED EVENT</span>
+      </article>
+      <article class="brief-card">
+        <span class="brief-label">ORBITAL OBJECTS</span>
+        <strong id="brief-satellite-value">WAITING</strong>
+        <span id="brief-satellite-note">STATIONS VISIBLE</span>
+      </article>
+      <article class="brief-card">
+        <span class="brief-label">SOURCE POSTURE</span>
+        <strong id="brief-source-value">WAITING</strong>
+        <span id="brief-source-note">ACTIVE VIEW / FEED STATE</span>
+      </article>
+      <article class="brief-card pulse-card">
+        <span class="brief-label">24H ACTIVITY PULSE</span>
+        <div class="pulse-bars" id="brief-pulse-bars" aria-label="Earthquake activity over the last 24 hours"></div>
+        <span id="brief-pulse-note">WAITING FOR TIMESTAMPS</span>
+      </article>
+    </div>
+  </section>
+  <div class="stats-header">
+    <span>ACTIVE SIGNALS</span>
+     <span class="stats-note">VISIBLE / CURRENT OR LOCAL HISTORY</span>
+  </div>
+  <div class="stats-row" id="stats-row">
+    <!-- Per-layer stats injected here -->
+  </div>
+</footer>
+
+</div>
+
+<div class="briefing-overlay" id="briefing-overlay" hidden>
+  <section class="briefing-card" role="dialog" aria-modal="true" aria-labelledby="briefing-title">
+    <div class="briefing-head">
+      <div><span class="mission-kicker">EVIDENCE PACKET</span><h2 id="briefing-title">SIGNAL BRIEF</h2></div>
+      <button id="briefing-close" type="button">CLOSE</button>
+    </div>
+    <p id="briefing-summary"></p>
+    <div class="briefing-grid">
+      <div><span>CLASSIFICATION</span><strong id="briefing-classification"></strong></div>
+      <div><span>OBSERVED</span><strong id="briefing-time"></strong></div>
+      <div><span>POSITION</span><strong id="briefing-position"></strong></div>
+    </div>
+    <div class="briefing-evidence-title">RELATED EVIDENCE / SAME REGION</div>
+    <ul id="briefing-evidence" class="briefing-evidence"></ul>
+    <div class="briefing-foot"><span id="briefing-provenance">Derived only from loaded sources.</span><button id="briefing-export" type="button">EXPORT BRIEF JSON</button></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js" integrity="sha384-Ukv1p/xTma6P4/2bY5KzWBw+ydSpXmhCMtyciIQVDJ1RmOxtCYNMF1uXT9T63H67" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/satellite.js@5.0.0/dist/satellite.min.js" integrity="sha384-e6V1JVpc+kVNTxT0gEOla7yL4c92Romsw7itPoipfzHbEjzUwPhTv6oeVDMHHzqT" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js" integrity="sha384-qOkzR5Ke/XkQxuGVJ9hpFEpDlcoLtWwVYhnJf06cLIZa2vaIptSqaubivErzmD5O" crossorigin="anonymous"></script>
+<script src="assets/config.js"></script>
+<script src="assets/source-utils.js"></script>
+<script src="assets/replay.js"></script>
+<script src="assets/history.js"></script>
+<script src="assets/globe.js"></script>
+<script src="assets/layers/earthquakes.js"></script>
+<script src="assets/layers/satellites.js"></script>
+<script src="assets/layers/flights.js"></script>
+<script src="assets/layers/ships.js"></script>
+<script src="assets/layers/gdelt.js"></script>
+<script src="assets/layers/cables.js"></script>
+<script src="assets/layers/buildings.js"></script>
+<script src="assets/orbital.js"></script>
+<script src="assets/news-panel.js"></script>
+<script src="assets/brief.js"></script>
+<script src="assets/inspector.js"></script>
+<script src="assets/insights.js"></script>
+<script src="assets/alerts.js"></script>
+<script src="assets/command-deck.js"></script>
+<script src="assets/experience.js"></script>
+<script src="assets/init.js"></script>
+
+<div class="welcome-overlay" id="welcome-overlay" hidden>
+  <div class="welcome-card" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+    <div class="welcome-kicker">FIELD GUIDE / 01</div>
+    <h1 id="welcome-title">Read the planet at a glance.</h1>
+    <p class="welcome-lede">Overview turns open planetary feeds into one calm, source-aware situation room.</p>
+    <div class="welcome-steps">
+      <div><span>01</span><strong>Choose a view</strong><small>Start with a guided signal story.</small></div>
+      <div><span>02</span><strong>Inspect a point</strong><small>Hover to see the source label.</small></div>
+      <div><span>03</span><strong>Trust the status</strong><small>Unavailable feeds stay clearly marked.</small></div>
+    </div>
+    <div class="welcome-actions">
+      <button class="welcome-primary" id="enter-observatory" type="button">ENTER OBSERVATORY</button>
+      <button class="welcome-secondary" id="launch-impact" type="button">START WITH IMPACT MAP</button>
+      <button class="welcome-secondary" id="launch-tour" type="button">RUN 30S TOUR</button>
+    </div>
+    <div class="welcome-foot">LIVE DATA / HONEST BOUNDARIES / NO BACKEND REQUIRED</div>
+  </div>
+</div>
+
+</body>
+</html>

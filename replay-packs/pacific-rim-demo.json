@@ -1,0 +1,36 @@
+{
+  "schema": "overview.replay.v1",
+  "id": "pacific-rim-demo",
+  "label": "Pacific Rim Signal Drill",
+  "description": "A small, deterministic event pack for demos, docs, and contributor tests.",
+  "capturedAt": "2026-01-15T12:00:00.000Z",
+  "sources": [
+    {
+      "id": "usgs",
+      "label": "USGS Earthquake Hazards Program",
+      "url": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/",
+      "license": "USGS public domain; verify source terms"
+    },
+    {
+      "id": "celestrak",
+      "label": "CelesTrak stations",
+      "url": "https://celestrak.org/NORAD/elements/",
+      "license": "CelesTrak terms apply"
+    }
+  ],
+  "layers": {
+    "earthquakes": {
+      "points": [
+        { "id": "pack-quake-1", "lat": 35.68, "lon": 139.76, "magnitude": 5.4, "size": 9.7, "place": "near Honshu, Japan", "observedAt": "2026-01-15T10:15:00.000Z", "label": "M5.4 - near Honshu, Japan" },
+        { "id": "pack-quake-2", "lat": 38.32, "lon": 142.37, "magnitude": 4.8, "size": 8.6, "place": "off Miyagi, Japan", "observedAt": "2026-01-15T08:20:00.000Z", "label": "M4.8 - off Miyagi, Japan" },
+        { "id": "pack-quake-3", "lat": -38.74, "lon": -73.05, "magnitude": 4.9, "size": 8.8, "place": "near Araucania, Chile", "observedAt": "2026-01-15T06:05:00.000Z", "label": "M4.9 - near Araucania, Chile" }
+      ]
+    },
+    "satellites": {
+      "points": [
+        { "id": "pack-station-1", "lat": 34.2, "lon": 141.1, "altitudeKm": 425, "size": 4, "label": "ISS / replay pack" },
+        { "id": "pack-station-2", "lat": -22.5, "lon": -71.4, "altitudeKm": 440, "size": 4, "label": "STATION-02 / replay pack" }
+      ]
+    }
+  }
+}

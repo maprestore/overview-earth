@@ -1,0 +1,6 @@
+name = "overview-ship-relay"
+main = "ships-worker.js"
+compatibility_date = "2025-09-01"
+
+[vars]
+ALLOWED_ORIGINS = "https://maprestore.github.io"
